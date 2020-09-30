@@ -1,8 +1,8 @@
 %% Simulation
 % Duration of simulation
-sim_time = 10;
+sim_time = 50;
 % Step inputs
-pos_e_step = [0,2,0];
+pos_e_step = [0,0,0];
 yaw_step = 0.00;
 
 %% Setup
@@ -13,16 +13,30 @@ setup_simulation;
 %% Sensor Noise
 sensor_noise = 0;
 
-%% Disturbance
-disturbance_on_off = 1;
-force_disturbance = 0;
-moment_disturbance = 1;
+%% DISTURBANCE SELECTOR
+% Step
+step_mag = 0.5; % second
+step_delay = 1; % second
 
-% Activate disturbance rejection
-ADRC = 0;
+% Pulse 
+pulse_amplitude = 0.1;
+pulse_period = 40; % seconds
+
+% Sinusoid
+sinus_amplitude = 0.1;
+sinus_bias = 0;
+sinus_freq = 1;
+
+% Ramp 
+ramp_slope = 0.05;
+ramp_max = 0.5;
+ramp_start = 1;
+
+
 
 %% Neural Network Effective Time Delay
-ROS2_delay=1/sim_freq;
+ROS2_delay=2.5/sim_freq;    %% Communcication of 100 Hz
+%ROS2_delay=150/sim_freq;    %% Communcication of 100 Hz
 
 
 %% Run simulation
