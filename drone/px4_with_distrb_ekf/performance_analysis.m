@@ -124,11 +124,11 @@ ITAE_force_step_disturbance_ekf_Xvelocity_response = trapz(1/sim_freq,time.*abs(
 ITAE_force_ramp_disturbance_ekf_Xvelocity_response = trapz(1/sim_freq,time.*abs(force_ramp_disturbance_ekf_Xvelocity_response));
 ITAE_force_sinus_disturbance_ekf_Xvelocity_response = trapz(1/sim_freq,time.*abs(force_sinus_disturbance_ekf_Xvelocity_response));
 %% Plotting for master thesis
-
+% Disturbance Rejection Response of Quadcopter
+% Force Sinus Response
 range = 10000;
 range_ = range/4;
 time_ = time(1:4:range);
-time__ = time(1:range);
 figure(11);
 plot(time_,force_step_disturbance_eso_estimation_true(1:4:range),'LineWidth',2)
 hold on 
@@ -137,7 +137,47 @@ ylabel('Disturbance Force [N]','Interpreter','latex','FontSize',12);
 xlabel('Time [s]','Interpreter','latex','FontSize',12);
 legend('Ground truth', 'Estimated','Interpreter','latex','FontSize',12);
 grid on
-saveas(gcf,'eso_step_force_est.pdf')
-!pdfcrop eso_step_force_est.pdf eso_step_force_est.pdf
+
+%% 
+% Disturbance Rejection Response of Quadcopter
+% Force Sinus Response
+range = 8000;
+begin= 2000;
+range_ = range/4;
+time_ = time(begin:4:range);
+figure(104);
+plot(time_,force_sinus_disturbance_ekf_estimation_true(begin:4:range),'LineWidth',2)
+hold on 
+plot(time_,force_sinus_disturbance_ekf_estimation(begin:4:range),'LineWidth',2)
+ax = gca;
+ax.YAxis.FontSize = 16; %for y-axis 
+ax.XAxis.FontSize = 16; %for y-axis
+ylabel('Force [N]','Interpreter','latex','FontSize',fontsize);
+xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
+xlim([begin/1000, range/1000])
+legend('Ground truth', 'ESO','Interpreter','latex','FontSize',fontsize,'Location','North West');
+grid on
+saveas(gcf,'ekf_sinus_force_rejection_estimation.pdf')
+!pdfcrop ekf_sinus_force_rejection_estimation.pdf ekf_sinus_force_rejection_estimation.pdf
+
+% Force Sinus Estimation with Rejection
+range = 10000;
+begin= 2000;
+range_ = range/4;
+time_ = time(begin:4:range);
+figure(105);
+plot(time_,force_sinus_disturbance_vanilla_Xvelocity_response(begin:4:range),'LineWidth',2)
+hold on 
+plot(time_,force_sinus_disturbance_ekf_Xvelocity_response(begin:4:range),'LineWidth',2)
+ax = gca;
+ax.YAxis.FontSize = 16; %for y-axis 
+ax.XAxis.FontSize = 16; %for y-axis
+ylabel('Velocity [m/s]','Interpreter','latex','FontSize',fontsize);
+xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
+xlim([begin/1000, range/1000])
+legend('PX4', 'ESO','Interpreter','latex','FontSize',fontsize);
+grid on
+saveas(gcf,'ekf_sinus_force_rejection_response.pdf')
+!pdfcrop ekf_sinus_force_rejection_response.pdf ekf_sinus_force_rejection_response.pdf
 
 

@@ -296,10 +296,131 @@ ITAE_moment_ramp_disturbance_ekf_pitchrate_response = trapz(1/sim_freq,time.*abs
 ITAE_moment_sinus_disturbance_ekf_pitchrate_response = trapz(1/sim_freq,time.*abs(moment_sinus_disturbance_ekf_pitchrate_response));
 
 %% Plotting for Thesis Results
-fontsize =14
+fontsize = 18
+% Disturbance Rejection Response of Quadcopter
+% Force Sinus Response
+ends = 2000;
+begin= 500;
+range = (begin:1:ends);
+figure(1);
+plot(time(range),force_sinus_disturbance_ekf_estimation_true(range),'LineWidth',2)
+hold on 
+plot(time(range),force_sinus_disturbance_ekf_estimation(range),'LineWidth',2)
+ax = gca;
+ax.YAxis.FontSize = 16; %for y-axis 
+ax.XAxis.FontSize = 16; %for y-axis
+ylabel('Force [N]','Interpreter','latex','FontSize',fontsize);
+xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
+xlim([begin*4/1000, ends*4/1000])
+legend('Ground truth', 'EKF','Interpreter','latex','FontSize',fontsize,'Location','North West');
+grid on
+saveas(gcf,'ekf_sinus_force_rejection_estimation.pdf')
+!pdfcrop ekf_sinus_force_rejection_estimation.pdf ekf_sinus_force_rejection_estimation.pdf
+
+% Force Sinus Estimation with Rejection
+begin = 500;
+ends = 3000;
+range = (begin:ends);
+figure(2);
+plot(time(range),force_sinus_disturbance_vanilla_Xvelocity_response(range),'LineWidth',2)
+hold on 
+plot(time(range),force_sinus_disturbance_ekf_Xvelocity_response(range),'LineWidth',2)
+ax = gca;
+ax.YAxis.FontSize = 16; %for y-axis 
+ax.XAxis.FontSize = 16; %for y-axis
+ylabel('Velocity [m/s]','Interpreter','latex','FontSize',fontsize);
+xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
+xlim([begin*4/1000, ends*4/1000])
+legend('PX4', 'EKF','Interpreter','latex','FontSize',fontsize);
+grid on
+saveas(gcf,'ekf_sinus_force_rejection_response.pdf')
+!pdfcrop ekf_sinus_force_rejection_response.pdf ekf_sinus_force_rejection_response.pdf
+
+
+%%
+% Disturbance Rejection Response of Quadcopter
+% Force Step Response
+ends = 2000;
+begin= 500;
+range = (begin:1:ends);
+figure(3);
+plot(time(range),ekf_force_step_estimation_true(range),'LineWidth',2)
+hold on 
+plot(time(range),ekf_force_step_estimation(range),'LineWidth',2)
+ax = gca;
+ax.YAxis.FontSize = 16; %for y-axis 
+ax.XAxis.FontSize = 16; %for y-axis
+ylabel('Force [N]','Interpreter','latex','FontSize',fontsize);
+xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
+xlim([begin*4/1000, ends*4/1000])
+legend('Ground truth', 'EKF','Interpreter','latex','FontSize',fontsize,'Location','South East');
+grid on
+saveas(gcf,'ekf_step_force_rejection_estimation.pdf')
+!pdfcrop ekf_step_force_rejection_estimation.pdf ekf_step_force_rejection_estimation.pdf
+
+% Force Sinus Estimation with Rejection
+begin = 500;
+ends = 3000;
+range = (begin:ends);
+figure(4);
+plot(time(range),force_step_disturbance_vanilla_Xvelocity_response(range),'LineWidth',2)
+hold on 
+plot(time(range),force_step_disturbance_ekf_Xvelocity_response(range),'LineWidth',2)
+ax = gca;
+ax.YAxis.FontSize = 16; %for y-axis 
+ax.XAxis.FontSize = 16; %for y-axis
+ylabel('Velocity [m/s]','Interpreter','latex','FontSize',fontsize);
+xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
+xlim([begin*4/1000, ends*4/1000])
+legend('PX4', 'EKF','Interpreter','latex','FontSize',fontsize);
+grid on
+saveas(gcf,'ekf_step_force_rejection_response.pdf')
+!pdfcrop ekf_step_force_rejection_response.pdf ekf_step_force_rejection_response.pdf
+
+%%
+% Disturbance Rejection Response of Quadcopter
+% Torque Step Response
+ends = 850;
+begin= 700;
+range = (begin:1:ends);
+figure(5);
+plot(time(range),moment_step_disturbance_ekf_estimation_true(range),'LineWidth',2)
+hold on 
+plot(time(range),moment_step_disturbance_ekf_estimation(range),'LineWidth',2)
+ax = gca;
+ax.YAxis.FontSize = 16; %for y-axis 
+ax.XAxis.FontSize = 16; %for y-axis
+ylabel('Torque [Nm]','Interpreter','latex','FontSize',fontsize);
+xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
+xlim([begin*4/1000, ends*4/1000])
+legend('Ground truth', 'EKF','Interpreter','latex','FontSize',fontsize,'Location','South East');
+grid on
+saveas(gcf,'ekf_step_torque_rejection_estimation.pdf')
+!pdfcrop ekf_step_torque_rejection_estimation.pdf ekf_step_torque_rejection_estimation.pdf
+
+% Torque Step Estimation with Rejection
+begin = 500;
+ends = 1500;
+range = (begin:ends);
+figure(6);
+plot(time(range),moment_step_disturbance_vanilla_pitchrate_response(range)*180/pi,'LineWidth',2)
+hold on 
+plot(time(range),moment_step_disturbance_ekf_pitchrate_response(range)*180/pi,'LineWidth',2)
+ax = gca;
+ax.YAxis.FontSize = 16; %for y-axis 
+ax.XAxis.FontSize = 16; %for y-axis
+ylabel('Pitchrate [deg/s]','Interpreter','latex','FontSize',fontsize);
+xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
+xlim([begin*4/1000, ends*4/1000])
+legend('PX4', 'EKF','Interpreter','latex','FontSize',fontsize);
+grid on
+saveas(gcf,'ekf_step_torque_rejection_response.pdf')
+!pdfcrop ekf_step_torque_rejection_response.pdf ekf_step_torque_rejection_response.pdf
+
+%%
 range = (1:2000);
 %time = size(ekf_force_step_estimation_true
-figure(11);
+figure(7);
 plot(time(range),force_sinus_disturbance_ekf_estimation_true(range),'LineWidth',2)
 hold on 
 plot(time(range),force_sinus_disturbance_ekf_estimation(range),'LineWidth',2)
@@ -312,7 +433,7 @@ saveas(gcf,'ekf_sinus_force_est.pdf')
 !pdfcrop ekf_sinus_force_est.pdf ekf_sinus_force_est.pdf
 %%
 range = (600:1000);
-figure(22);
+figure(8);
 plot(time(range),moment_step_disturbance_ekf_estimation_true(range),'LineWidth',2)
 hold on 
 plot(time(range),moment_step_disturbance_ekf_estimation(range),'LineWidth',2)
@@ -325,7 +446,7 @@ saveas(gcf,'ekf_step_torque_est.pdf')
 !pdfcrop ekf_step_torque_est.pdf ekf_step_torque_est.pdf
 %%
 range = (500:1500);
-figure(55);
+figure(9);
 plot(time(range),ekf_force_step_estimation_true(range),'LineWidth',2)
 hold on 
 plot(time(range),ekf_force_step_estimation(range),'LineWidth',2)
@@ -339,71 +460,71 @@ saveas(gcf,'ekf_step_force_est.pdf')
 %%
 
 
-%% Plotting for Thesis Results
-range = (1:2000);
-figure(11);
-plot(time(range),force_step_disturbance_ekf_estimation_true(range),'LineWidth',2)
-hold on 
-plot(time(range),force_step_disturbance_ekf_estimation(range),'LineWidth',2)
-ylabel('Disturbance force [N]','Interpreter','latex','FontSize',fontsize);
-xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
-legend('Ground truth', 'Estimated','Interpreter','latex','FontSize',fontsize);
-grid on
-
-%% Plotting graphs of interest
-figure(1)
-plot(force_step_disturbance_ekf_Xvelocity_response,'LineWidth',2)
-hold on
-%plot(force_step_disturbance_vanilla_Xvelocity_response(4:4:end),'LineWidth',2)
-%plot(force_step_disturbance_eso_Xvelocity_response(4:4:end),'LineWidth',2)
-%plot(f_step_disturbance_nn_Xvelocity_response,'LineWidth',2)
-title('Response of quadcopter experiencing a force step disturbance','Interpreter','latex','FontSize',20)
-ylabel('Velocity - [m/s]','Interpreter','latex','FontSize',fontsize);
-xlabel('Timestep','Interpreter','latex','FontSize',fontsize);
-legend({'EKF','PX4','ESO','NNO',},'Interpreter','latex','FontSize',fontsize)
-grid on
-
-
-%% Plotting graphs of interest
-figure(22)
-plot(moment_step_disturbance_ekf_pitchrate_response,'LineWidth',2)
-hold on
-plot(moment_step_disturbance_vanilla_pitchrate_response,'LineWidth',2)
-plot(moment_step_disturbance_eso_pitch_rate_response(4:4:end),'LineWidth',2)
-plot(m_step_disturbance_nn_pitch_rate_response,'LineWidth',2)
-title('Response of quadcopter experiencing a torque step disturbance','Interpreter','latex','FontSize',20)
-ylabel('Pitchrate - [rad/s]','Interpreter','latex','FontSize',12,'FontSize',20);
-xlabel('Timestep','Interpreter','latex','FontSize',12,'FontSize',20);
-legend({'EKF','PX4','ESO','NNO',},'Interpreter','latex','FontSize',20)
-grid on
-
-
-%% Plotting graphs of interest
-eso_force_step_estimation = eso_force_step_estimation(:,:);
-figure(3)
-plot(ekf_force_step_estimation(:,:),'LineWidth',2)
-hold on
-plot(eso_force_step_estimation(4:4:end),'LineWidth',2)
-grid on
-plot(nn_force_step_estimation,'LineWidth',2)
-
-title('Estimation of force disturbance','Interpreter','latex','FontSize',20)
-ylabel('Force - [N]','Interpreter','latex','FontSize',12,'FontSize',20);
-xlabel('Timestep','Interpreter','latex','FontSize',12,'FontSize',20);
-legend({'EKF','ESO','NNO',},'Interpreter','latex','FontSize',20)
-
-
-%% Plotting graphs of interest
-eso_force_sinus_estimation = eso_force_sinus_estimation(:,:);
-figure(3)
-plot(ekf_force_sinus_estimation(:,:),'LineWidth',2)
-hold on
-plot(eso_force_sinus_estimation(4:4:end),'LineWidth',2)
-grid on
-plot(nn_force_sinus_estimation,'LineWidth',2)
-
-title('Estimation of force disturbance','Interpreter','latex','FontSize',20)
-ylabel('Force - [N]','Interpreter','latex','FontSize',12,'FontSize',20);
-xlabel('Timestep','Interpreter','latex','FontSize',12,'FontSize',20);
-legend({'EKF','ESO','NNO',},'Interpreter','latex','FontSize',20)
-
+% %% Plotting for Thesis Results
+% range = (1:2000);
+% figure(11);
+% plot(time(range),force_step_disturbance_ekf_estimation_true(range),'LineWidth',2)
+% hold on 
+% plot(time(range),force_step_disturbance_ekf_estimation(range),'LineWidth',2)
+% ylabel('Disturbance force [N]','Interpreter','latex','FontSize',fontsize);
+% xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
+% legend('Ground truth', 'Estimated','Interpreter','latex','FontSize',fontsize);
+% grid on
+% 
+% %% Plotting graphs of interest
+% figure(1)
+% plot(force_step_disturbance_ekf_Xvelocity_response,'LineWidth',2)
+% hold on
+% %plot(force_step_disturbance_vanilla_Xvelocity_response(4:4:end),'LineWidth',2)
+% %plot(force_step_disturbance_eso_Xvelocity_response(4:4:end),'LineWidth',2)
+% %plot(f_step_disturbance_nn_Xvelocity_response,'LineWidth',2)
+% title('Response of quadcopter experiencing a force step disturbance','Interpreter','latex','FontSize',20)
+% ylabel('Velocity - [m/s]','Interpreter','latex','FontSize',fontsize);
+% xlabel('Timestep','Interpreter','latex','FontSize',fontsize);
+% legend({'EKF','PX4','ESO','NNO',},'Interpreter','latex','FontSize',fontsize)
+% grid on
+% 
+% 
+% %% Plotting graphs of interest
+% figure(22)
+% plot(moment_step_disturbance_ekf_pitchrate_response,'LineWidth',2)
+% hold on
+% plot(moment_step_disturbance_vanilla_pitchrate_response,'LineWidth',2)
+% plot(moment_step_disturbance_eso_pitch_rate_response(4:4:end),'LineWidth',2)
+% plot(m_step_disturbance_nn_pitch_rate_response,'LineWidth',2)
+% title('Response of quadcopter experiencing a torque step disturbance','Interpreter','latex','FontSize',20)
+% ylabel('Pitchrate - [rad/s]','Interpreter','latex','FontSize',12,'FontSize',20);
+% xlabel('Timestep','Interpreter','latex','FontSize',12,'FontSize',20);
+% legend({'EKF','PX4','ESO','NNO',},'Interpreter','latex','FontSize',20)
+% grid on
+% 
+% 
+% %% Plotting graphs of interest
+% eso_force_step_estimation = eso_force_step_estimation(:,:);
+% figure(3)
+% plot(ekf_force_step_estimation(:,:),'LineWidth',2)
+% hold on
+% plot(eso_force_step_estimation(4:4:end),'LineWidth',2)
+% grid on
+% plot(nn_force_step_estimation,'LineWidth',2)
+% 
+% title('Estimation of force disturbance','Interpreter','latex','FontSize',20)
+% ylabel('Force - [N]','Interpreter','latex','FontSize',12,'FontSize',20);
+% xlabel('Timestep','Interpreter','latex','FontSize',12,'FontSize',20);
+% legend({'EKF','ESO','NNO',},'Interpreter','latex','FontSize',20)
+% 
+% 
+% %% Plotting graphs of interest
+% eso_force_sinus_estimation = eso_force_sinus_estimation(:,:);
+% figure(3)
+% plot(ekf_force_sinus_estimation(:,:),'LineWidth',2)
+% hold on
+% plot(eso_force_sinus_estimation(4:4:end),'LineWidth',2)
+% grid on
+% plot(nn_force_sinus_estimation,'LineWidth',2)
+% 
+% title('Estimation of force disturbance','Interpreter','latex','FontSize',20)
+% ylabel('Force - [N]','Interpreter','latex','FontSize',12,'FontSize',20);
+% xlabel('Timestep','Interpreter','latex','FontSize',12,'FontSize',20);
+% legend({'EKF','ESO','NNO',},'Interpreter','latex','FontSize',20)
+% 

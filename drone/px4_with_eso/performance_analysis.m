@@ -58,7 +58,7 @@ simulation = sim('px4_mc_eso_comparisons_sim');
 moment_ramp_disturbance_vanilla_pitch_rate_response=simulation.get('pitchrate').Data;
 moment_ramp_disturbance_vanilla_Xvelocity_response=simulation.get('Xvelocity').Data;
 
-%% Vanilla simulation, sinus ramp disturbance
+%% Vanilla simulation, sinus sinus disturbance
 option1 = 3;    % sinus disturbance    
 option2 = 2;    % moment
 disp("Vanilla simulation, sinus ramp disturbance")
@@ -69,7 +69,7 @@ moment_sinus_disturbance_vanilla_Xvelocity_response=simulation.get('Xvelocity').
 %% ESO Simulation
 angular_rate_disturbance_rejection = 1;
 activate_disturbance = 1;
-
+velocity_disturbance_rejection = 0;
 %% ESO simulation, moment step disturbance
 option1 = 1;    % step disturbance    
 option2 = 2;    % moment
@@ -245,7 +245,8 @@ ITAE_force_sinus_disturbance_eso_Xvelocity_response = trapz(1/sim_freq,time.*abs
 
 %% Plotting for Thesis Results
 % Font Size
-fontsize = 14
+fontsize = 16
+%%
 
 range = 10000;
 range_ = range/4;
@@ -284,7 +285,7 @@ time_ = time(begin:4:range);
 figure(44);
 plot(time_,force_sinus_disturbance_eso_estimation_true(begin:4:range),'LineWidth',2)
 hold on 
-plot(time_,force_sinus_disturbance_eso_estimation(begin:4:range),'LineWidth',2)
+plot(time_,force_step_disturbance_eso_Xvelocity_response(begin:4:range),'LineWidth',2)
 ylabel('Disturbance Force [N]','Interpreter','latex','FontSize',fontsize);
 xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
 legend('Ground truth', 'Estimated','Interpreter','latex','FontSize',fontsize);
@@ -305,6 +306,179 @@ ylabel('Disturbance Torque [Nm]','Interpreter','latex','FontSize',fontsize);
 xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
 legend('Ground truth', 'Estimated','Interpreter','latex','FontSize',fontsize);
 grid on
-%%
 saveas(gcf,'eso_step_torque_est.pdf')
 !pdfcrop eso_step_torque_est.pdf eso_step_torque_est.pdf
+%% 
+% Disturbance Rejection Response of Quadcopter
+% Step Velocity
+fontsize = 20
+range = 22000;
+begin= 1000;
+range_ = range/4;
+time_ = time(begin:4:range);
+figure(100);
+plot(time_,force_step_disturbance_vanilla_Xvelocity_response(begin:4:range),'LineWidth',2)
+hold on 
+plot(time_,force_step_disturbance_eso_Xvelocity_response(begin:4:range),'LineWidth',2)
+ax = gca;
+ax.YAxis.FontSize = 16; %for y-axis 
+ax.XAxis.FontSize = 16; %for y-axis 
+
+xlim([begin/1000, range/1000])
+ylabel('Velocity [m/s]','Interpreter','latex','FontSize',fontsize);
+xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
+legend('PX4', 'ESO','Interpreter','latex','FontSize',fontsize);
+grid on
+saveas(gcf,'eso_step_force_rejection_response.pdf')
+!pdfcrop eso_step_force_rejection_response.pdf eso_step_force_rejection_response.pdf
+
+% Estimation and groundtruth
+range = 10000;
+begin= 1000;
+range_ = range/4;
+time_ = time(begin:4:range);
+figure(101);
+plot(time_,force_step_disturbance_eso_estimation_true(begin:4:range),'LineWidth',2)
+hold on 
+plot(time_,force_step_disturbance_eso_estimation(begin:4:range),'LineWidth',2)
+ax = gca;
+ax.YAxis.FontSize = 16; %for y-axis 
+ax.XAxis.FontSize = 16; %for y-axis 
+
+xlim([begin/1000, range/1000])
+ylabel('Force [N]','Interpreter','latex','FontSize',fontsize);
+xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
+legend('Ground truth', 'ESO','Interpreter','latex','FontSize',fontsize);
+grid on
+saveas(gcf,'eso_step_force_estimation_rejection.pdf')
+!pdfcrop eso_step_force_estimation_rejection.pdf eso_step_force_estimation_rejection.pdf
+
+
+%% 
+% Disturbance Rejection Response of Quadcopter
+% Step Torque Response
+range = 4000;
+begin= 2000;
+range_ = range/4;
+time_ = time(begin:4:range);
+figure(101);
+plot(time_,moment_step_disturbance_eso_estimation_true(begin:4:range)*180/pi,'LineWidth',2)
+hold on 
+plot(time_,moment_step_disturbance_eso_estimation(begin:4:range)*180/pi,'LineWidth',2)
+ax = gca;
+ax.YAxis.FontSize = 16; %for y-axis 
+ax.XAxis.FontSize = 16; %for y-axis
+ylabel('Torque [N]','Interpreter','latex','FontSize',fontsize);
+xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
+xlim([begin/1000, range/1000])
+legend('Ground truth', 'ESO','Interpreter','latex','FontSize',fontsize,'Location','North West');
+grid on
+saveas(gcf,'eso_step_torque_rejection_estimation.pdf')
+!pdfcrop eso_step_torque_rejection_estimation.pdf eso_step_torque_rejection_estimation.pdf
+
+% Step Torque Estimation with Rejection
+range = 8000;
+begin= 2000;
+range_ = range/4;
+time_ = time(begin:4:range);
+figure(103);
+plot(time_,moment_step_disturbance_vanilla_pitch_rate_response(begin:4:range)*180/pi,'LineWidth',2)
+hold on 
+plot(time_,moment_step_disturbance_eso_pitch_rate_response(begin:4:range)*180/pi,'LineWidth',2)
+ax = gca;
+ax.YAxis.FontSize = 16; %for y-axis 
+ax.XAxis.FontSize = 16; %for y-axis
+ylabel('Pitchrate [deg/s]','Interpreter','latex','FontSize',fontsize);
+xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
+xlim([begin/1000, range/1000])
+legend('PX4', 'ESO','Interpreter','latex','FontSize',fontsize);
+grid on
+saveas(gcf,'eso_step_torque_rejection_response.pdf')
+!pdfcrop eso_step_torque_rejection_response.pdf eso_step_torque_rejection_response.pdf
+
+%% 
+% Disturbance Rejection Response of Quadcopter
+% Torque Sinus Response
+range = 8000;
+begin= 2000;
+range_ = range/4;
+time_ = time(begin:4:range);
+figure(104);
+plot(time_,moment_sinus_disturbance_eso_estimation_true(begin:4:range)*180/pi,'LineWidth',2)
+hold on 
+plot(time_,moment_sinus_disturbance_eso_estimation(begin:4:range)*180/pi,'LineWidth',2)
+ax = gca;
+ax.YAxis.FontSize = 16; %for y-axis 
+ax.XAxis.FontSize = 16; %for y-axis
+ylabel('Torque [Nm]','Interpreter','latex','FontSize',fontsize);
+xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
+xlim([begin/1000, range/1000])
+legend('Ground truth', 'ESO','Interpreter','latex','FontSize',fontsize,'Location','North West');
+grid on
+saveas(gcf,'eso_sinus_torque_rejection_estimation.pdf')
+!pdfcrop eso_sinus_torque_rejection_estimation.pdf eso_sinus_torque_rejection_estimation.pdf
+
+% Step Torque Estimation with Rejection
+range = 10000;
+begin= 2000;
+range_ = range/4;
+time_ = time(begin:4:range);
+figure(105);
+plot(time_,moment_sinus_disturbance_vanilla_pitch_rate_response(begin:4:range)*180/pi,'LineWidth',2)
+hold on 
+plot(time_,moment_sinus_disturbance_eso_pitch_rate_response(begin:4:range)*180/pi,'LineWidth',2)
+ax = gca;
+ax.YAxis.FontSize = 16; %for y-axis 
+ax.XAxis.FontSize = 16; %for y-axis
+ylabel('Pitchrate [deg/s]','Interpreter','latex','FontSize',fontsize);
+xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
+xlim([begin/1000, range/1000])
+legend('PX4', 'ESO','Interpreter','latex','FontSize',fontsize);
+grid on
+saveas(gcf,'eso_sinus_torque_rejection_response.pdf')
+!pdfcrop eso_sinus_torque_rejection_response.pdf eso_sinus_torque_rejection_response.pdf
+
+%% 
+% Disturbance Rejection Response of Quadcopter
+% Force Sinus Response
+range = 8000;
+begin= 2000;
+range_ = range/4;
+time_ = time(begin:4:range);
+figure(104);
+plot(time_,force_sinus_disturbance_eso_estimation_true(begin:4:range),'LineWidth',2)
+hold on 
+plot(time_,force_sinus_disturbance_eso_estimation(begin:4:range),'LineWidth',2)
+ax = gca;
+ax.YAxis.FontSize = 16; %for y-axis 
+ax.XAxis.FontSize = 16; %for y-axis
+ylabel('Force [N]','Interpreter','latex','FontSize',fontsize);
+xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
+xlim([begin/1000, range/1000])
+legend('Ground truth', 'ESO','Interpreter','latex','FontSize',fontsize,'Location','North West');
+grid on
+saveas(gcf,'eso_sinus_force_rejection_estimation.pdf')
+!pdfcrop eso_sinus_force_rejection_estimation.pdf eso_sinus_force_rejection_estimation.pdf
+
+% Force Sinus Estimation with Rejection
+range = 10000;
+begin= 2000;
+range_ = range/4;
+time_ = time(begin:4:range);
+figure(105);
+plot(time_,force_sinus_disturbance_vanilla_Xvelocity_response(begin:4:range)*180/pi,'LineWidth',2)
+hold on 
+plot(time_,force_sinus_disturbance_eso_Xvelocity_response(begin:4:range)*180/pi,'LineWidth',2)
+ax = gca;
+ax.YAxis.FontSize = 16; %for y-axis 
+ax.XAxis.FontSize = 16; %for y-axis
+ylabel('Velocity [m/s]','Interpreter','latex','FontSize',fontsize);
+xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
+xlim([begin/1000, range/1000])
+legend('PX4', 'ESO','Interpreter','latex','FontSize',fontsize);
+grid on
+saveas(gcf,'eso_sinus_force_rejection_response.pdf')
+!pdfcrop eso_sinus_force_rejection_response.pdf eso_sinus_force_rejection_response.pdf
+
+
+

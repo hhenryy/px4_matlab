@@ -73,8 +73,7 @@ option2 = 2;    % moment
 simulation = sim('px4_mc_nn_comparisons_sim');
 m_step_disturbance_nn_pitch_rate_response=simulation.get('pitchrate').Data;
 m_step_disturbance_nn_Xvelocity_response=simulation.get('Xvelocity').Data;
-m_step_disturbance_nn_estimation = simulation.get('torque_disturbance_est').Data;
-m_step_disturbance_nn_ground_truth = simulation.get('torque_disturbance_ground_truth').Data;
+
 %% nn simulation, moment ramp disturbance
 disp("nn simulation, moment ramp disturbance");
 option1 = 2;    % ramp disturbance    
@@ -328,38 +327,38 @@ ends = 850;
 begin= 700;
 range = (begin:1:ends);
 figure(5);
-plot(time(range),m_step_disturbance_nn_ground_truth(range),'LineWidth',2)
+plot(time(range),moment_step_disturbance_ekf_estimation_true(range),'LineWidth',2)
 hold on 
-plot(time(range),m_step_disturbance_nn_estimation(range),'LineWidth',2)
+plot(time(range),moment_step_disturbance_ekf_estimation(range),'LineWidth',2)
 ax = gca;
 ax.YAxis.FontSize = 16; %for y-axis 
 ax.XAxis.FontSize = 16; %for y-axis
 ylabel('Torque [Nm]','Interpreter','latex','FontSize',fontsize);
 xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
 xlim([begin*4/1000, ends*4/1000])
-legend('Ground truth', 'NN','Interpreter','latex','FontSize',fontsize,'Location','South East');
+legend('Ground truth', 'EKF','Interpreter','latex','FontSize',fontsize,'Location','South East');
 grid on
-saveas(gcf,'nn_step_torque_rejection_estimation.pdf')
-!pdfcrop nn_step_torque_rejection_estimation.pdf nn_step_torque_rejection_estimation.pdf
+%saveas(gcf,'ekf_step_torque_rejection_estimation.pdf')
+%!pdfcrop ekf_step_torque_rejection_estimation.pdf ekf_step_torque_rejection_estimation.pdf
 
 % Torque Step Estimation with Rejection
 begin = 500;
 ends = 1500;
 range = (begin:ends);
 figure(6);
-plot(time(range),m_step_disturbance_vanilla_pitch_rate_response(range)*180/pi,'LineWidth',2)
+plot(time(range),moment_step_disturbance_vanilla_pitchrate_response(range)*180/pi,'LineWidth',2)
 hold on 
-plot(time(range),m_step_disturbance_nn_pitch_rate_response(range)*180/pi,'LineWidth',2)
+plot(time(range),moment_step_disturbance_ekf_pitchrate_response(range)*180/pi,'LineWidth',2)
 ax = gca;
 ax.YAxis.FontSize = 16; %for y-axis 
 ax.XAxis.FontSize = 16; %for y-axis
 ylabel('Pitchrate [deg/s]','Interpreter','latex','FontSize',fontsize);
 xlabel('Time [s]','Interpreter','latex','FontSize',fontsize);
 xlim([begin*4/1000, ends*4/1000])
-legend('PX4', 'NN','Interpreter','latex','FontSize',fontsize);
+legend('PX4', 'EKF','Interpreter','latex','FontSize',fontsize);
 grid on
-saveas(gcf,'nn_step_torque_rejection_response.pdf')
-!pdfcrop nn_step_torque_rejection_response.pdf nn_step_torque_rejection_response.pdf
+%saveas(gcf,'ekf_step_torque_rejection_response.pdf')
+%!pdfcrop ekf_step_torque_rejection_response.pdf ekf_step_torque_rejection_response.pdf
 
 %%
 range = (1:2000);
